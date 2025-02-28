@@ -264,7 +264,7 @@ tests withDebugging wdConfig caps _selenium = do
           let conf :: ElementConfig EventResult (SpiderTimeline Global) GhcjsDomSpace
               conf = (def :: ElementConfig EventResult (SpiderTimeline Global) GhcjsDomSpace)
                 & initialAttributes .~ "id" =: "second"
-                & elementConfig_eventSpec .~ addEventSpecFlags (Proxy :: Proxy GhcjsDomSpace) Click (\_ -> stopPropagation) def
+                & elementConfig_eventSpec .~ addEventSpecFlags (Proxy :: Proxy GhcjsDomSpace) Click (\_ -> pure stopPropagation) def
           void $ element "span" conf $ text "hello world"
         performEvent_ $ liftIO (writeRef secondClickedRef True) <$ domEvent Click secondDivEl
       firstClicked <- readRef firstClickedRef
@@ -280,7 +280,7 @@ tests withDebugging wdConfig caps _selenium = do
       clicked <- testWidget (pure ()) click $ prerender_ (pure ()) $ do
         let conf :: ElementConfig EventResult (SpiderTimeline Global) GhcjsDomSpace
             conf = (def :: ElementConfig EventResult (SpiderTimeline Global) GhcjsDomSpace)
-              & elementConfig_eventSpec .~ addEventSpecFlags (Proxy :: Proxy GhcjsDomSpace) Click (\_ -> preventDefault) def
+              & elementConfig_eventSpec .~ addEventSpecFlags (Proxy :: Proxy GhcjsDomSpace) Click (\_ -> pure preventDefault) def
               & initialAttributes .~ "type" =: "checkbox"
         void $ element "input" conf $ text "hello world"
       assertEqual "Click not prevented" (False, False) clicked

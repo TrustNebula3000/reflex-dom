@@ -76,7 +76,7 @@ class Default (EventSpec d EventResult) => DomSpace d where
   type RawInputElement d :: Type
   type RawTextAreaElement d :: Type
   type RawSelectElement d :: Type
-  addEventSpecFlags :: proxy d -> EventName en -> (Maybe (er en) -> EventFlags) -> EventSpec d er -> EventSpec d er
+  addEventSpecFlags :: proxy d -> EventName en -> (Maybe (EventResult en) -> JSM EventFlags) -> EventSpec d EventResult -> EventSpec d EventResult
 
 -- | @'DomBuilder' t m@ indicates that @m@ is a 'Monad' capable of building
 -- dynamic DOM in the 'Reflex' timeline @t@

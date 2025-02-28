@@ -663,11 +663,12 @@ instance DomSpace GhcjsDomSpace where
         let f' = Just . GhcjsEventFilter . \case
               Nothing -> \evt -> do
                 mEventResult <- unGhcjsEventHandler (_ghcjsEventSpec_handler es) (en, evt)
-                return (f mEventResult, return mEventResult)
+                newFlags <- f mEventResult
+                return (newFlags, return mEventResult)
               Just (GhcjsEventFilter oldFilter) -> \evt -> do
                 (oldFlags, oldContinuation) <- oldFilter evt
                 mEventResult <- oldContinuation
-                let newFlags = oldFlags <> f mEventResult
+                newFlags <- fmap (oldFlags <>) (f mEventResult)
                 return (newFlags, return mEventResult)
         in DMap.alter f' en $ _ghcjsEventSpec_filters es
     }
@@ -1444,11 +1445,12 @@ instance DomSpace HydrationDomSpace where
         let f' = Just . GhcjsEventFilter . \case
               Nothing -> \evt -> do
                 mEventResult <- unGhcjsEventHandler (_ghcjsEventSpec_handler es) (en, evt)
-                return (f mEventResult, return mEventResult)
+                newFlags <- f mEventResult
+                return (newFlags, return mEventResult)
               Just (GhcjsEventFilter oldFilter) -> \evt -> do
                 (oldFlags, oldContinuation) <- oldFilter evt
                 mEventResult <- oldContinuation
-                let newFlags = oldFlags <> f mEventResult
+                newFlags <- fmap (oldFlags <>) (f mEventResult)
                 return (newFlags, return mEventResult)
         in DMap.alter f' en $ _ghcjsEventSpec_filters es
     }
